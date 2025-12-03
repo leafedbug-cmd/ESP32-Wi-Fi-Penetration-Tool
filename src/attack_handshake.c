@@ -22,6 +22,7 @@
 #include "frame_analyzer.h"
 #include "pcap_serializer.h"
 #include "hccapx_serializer.h"
+#include "led_strip_ws2812.h"
 
 static const char *TAG = "main:attack_handshake";
 static attack_handshake_methods_t method = -1;
@@ -49,6 +50,7 @@ static void eapolkey_frame_handler(void *args, esp_event_base_t event_base, int3
 
 void attack_handshake_start(attack_config_t *attack_config){
     ESP_LOGI(TAG, "Starting handshake attack...");
+    led_strip_pulse(0, 255, 0, 750);  // Green pulse for handshake capture
     method = attack_config->method;
     ap_record = attack_config->ap_record;
     pcap_serializer_init();
@@ -92,7 +94,8 @@ void attack_handshake_stop(){
     }
     wifictl_sniffer_stop();
     frame_analyzer_capture_stop();
-    ESP_ERROR_CHECK(esp_event_handler_unregister(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, &eapolkey_frame_handler));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_EAPOLKEY_FRAME, &eapolkey_frame_handler));
+    led_strip_pulse(0, 0, 255, 1000);  // Back to blue pulse
     ap_record = NULL;
     method = -1;
     ESP_LOGD(TAG, "Handshake attack stopped");

@@ -15,12 +15,14 @@
 #include "attack.h"
 #include "attack_method.h"
 #include "wifi_controller.h"
+#include "led_strip_ws2812.h"
 
 static const char *TAG = "main:attack_dos";
 static attack_dos_methods_t method = -1;
 
 void attack_dos_start(attack_config_t *attack_config) {
     ESP_LOGI(TAG, "Starting DoS attack...");
+    led_strip_pulse(255, 0, 0, 500);  // Fast red pulse for DoS
     method = attack_config->method;
     switch(method){
         case ATTACK_DOS_METHOD_BROADCAST:
@@ -58,5 +60,6 @@ void attack_dos_stop() {
         default:
             ESP_LOGE(TAG, "Unknown attack method! Attack may not be stopped properly.");
     }
+    led_strip_pulse(0, 0, 255, 1000);  // Back to blue pulse
     ESP_LOGI(TAG, "DoS attack stopped");
 }

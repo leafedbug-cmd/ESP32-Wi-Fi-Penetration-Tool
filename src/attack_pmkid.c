@@ -21,6 +21,7 @@
 #include "wifi_controller.h"
 #include "frame_analyzer.h"
 #include "frame_analyzer_types.h"
+#include "led_strip_ws2812.h"
 
 static const char* TAG = "main:attack_pmkid";
 static const wifi_ap_record_t *ap_record = NULL;
@@ -75,6 +76,7 @@ static void pmkid_exit_condition_handler(void *args, esp_event_base_t event_base
 
 void attack_pmkid_start(attack_config_t *attack_config){
     ESP_LOGI(TAG, "Starting PMKID attack...");
+    led_strip_pulse(255, 165, 0, 600);  // Orange pulse for PMKID
     ap_record = attack_config->ap_record;
     wifictl_sniffer_filter_frame_types(true, false, false);
     wifictl_sniffer_start(ap_record->primary);
@@ -87,6 +89,7 @@ void attack_pmkid_stop(){
     wifictl_sta_disconnect();
     wifictl_sniffer_stop();
     frame_analyzer_capture_stop();
-    ESP_ERROR_CHECK(esp_event_handler_unregister(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, &pmkid_exit_condition_handler));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PMKID, &pmkid_exit_condition_handler));
+    led_strip_pulse(0, 0, 255, 1000);  // Back to blue pulse
     ESP_LOGD(TAG, "PMKID attack stopped");
 }
