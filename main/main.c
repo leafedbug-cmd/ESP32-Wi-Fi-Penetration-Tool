@@ -18,12 +18,24 @@
 #include "attack.h"
 #include "wifi_controller.h"
 #include "webserver.h"
+#include "led_strip_ws2812.h"
 
 static const char* TAG = "main";
 
 void app_main(void)
 {
     ESP_LOGD(TAG, "app_main started");
+    
+    // Initialize LED on GPIO 48 (WS2812 built-in LED)
+    ESP_LOGI(TAG, "Initializing WS2812 LED");
+    if (led_strip_init() == 0) {
+        ESP_LOGI(TAG, "LED initialized successfully");
+        // LED pulse: blue color while running
+        led_strip_pulse(0, 0, 255, 1000);  // Blue pulse at 1Hz
+    } else {
+        ESP_LOGW(TAG, "LED initialization failed");
+    }
+    
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     wifictl_mgmt_ap_start();
     attack_init();

@@ -3,3 +3,7 @@ build/
 
 # Ignore the SDKConfig file
 *sdkconfig*
+
+# Ignore PlatformIO artifacts and local IDE state
+.pio/
+.vscode/
