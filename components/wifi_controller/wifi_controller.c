@@ -54,7 +54,7 @@ void wifictl_ap_start(wifi_config_t *wifi_config) {
         wifi_init_apsta();
     }
 
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, wifi_config));
     ESP_LOGI(TAG, "AP started with SSID=%s", wifi_config->ap.ssid);
 }
 
@@ -65,7 +65,7 @@ void wifictl_ap_stop(){
             .max_connection = 0
         },
     };
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
     ESP_LOGD(TAG, "AP stopped");
 }
 
@@ -108,7 +108,7 @@ void wifictl_sta_connect_to_ap(const wifi_ap_record_t *ap_record, const char pas
 
     ESP_LOGD(TAG, ".ssid=%s", sta_wifi_config.sta.ssid);
 
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &sta_wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta_wifi_config));
     ESP_ERROR_CHECK(esp_wifi_connect());
 
 }

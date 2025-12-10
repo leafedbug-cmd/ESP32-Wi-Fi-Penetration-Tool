@@ -21,7 +21,7 @@
 #include "attack_pmkid.h"
 #include "attack_handshake.h"
 #include "attack_dos.h"
-#include "webserver.h"
+#include "webserver_events.h"
 #include "wifi_controller.h"
 
 static const char* TAG = "attack";
